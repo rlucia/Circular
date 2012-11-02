@@ -91,6 +91,9 @@ Circular.Utils.Time = {
 		local12HourTime.day = day;
 		
 		return local12HourTime;
+	},
+	shiftMinutes: function(time) {
+		return Math.floor(Math.random()*time.within*60*2-time.within*60);
 	}
 };
 
@@ -136,10 +139,10 @@ Circular.Models.Settings = Backbone.Model.extend({
 	defaultTimes: function(){
 		// Like Buffer, we create 4 random times, 2 in the AM, 2 in the PM:
 		var times = [
-			{hour:9,  minute:Math.floor(Math.random()*60), ampm:"am"},
-			{hour:11, minute:Math.floor(Math.random()*60), ampm:"am"},
-			{hour:3,  minute:Math.floor(Math.random()*60), ampm:"pm"},
-			{hour:5,  minute:Math.floor(Math.random()*60), ampm:"pm"}
+			{hour:9,  minute:Math.floor(Math.random()*60), ampm:"am", within: 0},
+			{hour:11, minute:Math.floor(Math.random()*60), ampm:"am", within: 0},
+			{hour:3,  minute:Math.floor(Math.random()*60), ampm:"pm", within: 0},
+			{hour:5,  minute:Math.floor(Math.random()*60), ampm:"pm", within: 0}
 		];
 		return times;
 	},
@@ -214,6 +217,7 @@ Circular.Views.Settings = Backbone.View.extend({
 			$("select.hour", out).val(time.hour);
 			$("select.minute", out).val(time.minute);
 			$("select.ampm", out).val(time.ampm);
+			$("select.within",out).val(time.within);
 			this.$(".times").append(out);
 		}, this);
 	},
@@ -235,6 +239,7 @@ Circular.Views.Settings = Backbone.View.extend({
 				hour:   $(this).find("select.hour").val(),
 				minute: $(this).find("select.minute").val(),
 				ampm:   $(this).find("select.ampm").val(),
+				within: $(this).find("select.within").val()
 			});
 		});
 		// Sort times by chronological order:
@@ -715,7 +720,8 @@ Circular.Models.PostsTimes = Backbone.Model.extend({
 			// (ie: you can specify 32 days or 5000 seconds, parameters will overflow)
 			// @todo: Check that this is documented and standard.
 			var timestamp = Circular.Utils.Time.generateUnixTimestamp(then);
-			
+			timestamp += Circular.Utils.Time.shiftMinutes(times[i % times.length]);
+	
 			post.set({time: timestamp});
 			
 			i++;
