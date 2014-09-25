@@ -1,4 +1,5 @@
 # Circular
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/rlucia/Circular?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 #### An open source Buffer app built on Backbone, Bootstrap and MongoDB
 
